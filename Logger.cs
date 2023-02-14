@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
+using System.Data.SqlClient;
 using System.Windows.Forms;
 
 namespace Exam_ADO
@@ -22,11 +22,11 @@ namespace Exam_ADO
         internal User Login(string username, string pass)
         {
                 // Создание подключения
-                using (SqliteConnection connection = new SqliteConnection("Data source = filesdata.db"))
+                using (SqlConnection connection = new SqlConnection("Data source = filesdata.db"))
                 {
-                    SqliteCommand command = new SqliteCommand($@"SELECT * from users WHERE username = '{username}' and password = '{pass}'", connection);
+                    SqlCommand command = new SqlCommand($@"SELECT * from users WHERE username = '{username}' and password = '{pass}'", connection);
                     connection.Open();
-                    SqliteDataReader sqldatareader = command.ExecuteReader();
+                    SqlDataReader sqldatareader = command.ExecuteReader();
                     if (sqldatareader.HasRows)
                     {
                         User user = new User();
