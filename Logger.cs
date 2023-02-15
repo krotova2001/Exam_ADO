@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using System.Configuration;
 
 namespace Exam_ADO
 {
@@ -21,27 +22,27 @@ namespace Exam_ADO
         /// <returns>Новый объект User</returns>
         internal User Login(string username, string pass)
         {
-                // Создание подключения
-                using (SqlConnection connection = new SqlConnection("Data source = filesdata.db"))
+            string connectionString = "Server=BATYA\\SQLEXPRESS; Database=Books; Trusted_Connection=True;";
+            // Создание подключения
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand($@"SELECT * from UsersSet WHERE username = '{username}' and password = '{pass}'", connection);
+                connection.Open();
+                SqlDataReader sqldatareader = command.ExecuteReader();
+                if (sqldatareader.HasRows)
                 {
-                    SqlCommand command = new SqlCommand($@"SELECT * from users WHERE username = '{username}' and password = '{pass}'", connection);
-                    connection.Open();
-                    SqlDataReader sqldatareader = command.ExecuteReader();
-                    if (sqldatareader.HasRows)
+                    User user = new User();
+                    while (sqldatareader.Read())
                     {
-                        User user = new User();
-                        while (sqldatareader.Read())
-                        {
-                            user.Id = sqldatareader.GetInt32(0);
-                            user.name = sqldatareader.GetString(3);
-                            user.surname = sqldatareader.GetString(4);
-                        }
-                        sqldatareader.Close();
-                        return user;
+                        user.Id = sqldatareader.GetInt32(0);
+                        user.name = sqldatareader.GetString(3);
                     }
-                    else
-                        return null;
+                    sqldatareader.Close();
+                    return user;
                 }
+                else
+                    return null;
+            }
         }
     }
 }

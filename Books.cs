@@ -14,9 +14,24 @@ namespace Exam_ADO
     
     public partial class Books
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Books()
+        {
+            this.Authors = new HashSet<Authors>();
+            this.Sales = new HashSet<Sales>();
+        }
+    
         public int Idbook { get; set; }
         public string Title { get; set; }
         public int Cost { get; set; }
         public int Year { get; set; }
+    
+        public virtual Users Users { get; set; }
+        public virtual Genre Genre { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Authors> Authors { get; set; }
+        public virtual Akcii Akcii { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Sales> Sales { get; set; }
     }
 }

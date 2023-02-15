@@ -14,10 +14,19 @@ namespace Exam_ADO
     
     public partial class Akcii
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Akcii()
+        {
+            this.Books = new HashSet<Books>();
+        }
+    
         public int Idakcii { get; set; }
         public string Description { get; set; }
         public int Discount { get; set; }
         public System.DateTime start { get; set; }
         public System.DateTime stop { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Books> Books { get; set; }
     }
 }

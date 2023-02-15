@@ -14,9 +14,18 @@ namespace Exam_ADO
     
     public partial class Users
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Users()
+        {
+            this.Books = new HashSet<Books>();
+        }
+    
         public int Iduser { get; set; }
         public string username { get; set; }
         public string password { get; set; }
         public string fullname { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Books> Books { get; set; }
     }
 }
