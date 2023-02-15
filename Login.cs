@@ -13,29 +13,29 @@ namespace Exam_ADO
 {
     public partial class Login : Form
     {
-            User cur_user; // временное хранение текущего пользователя, чтоб потом передать главной форме
-            public Login()
-            {
-                InitializeComponent();
-            }
+        User cur_user; // временное хранение текущего пользователя, чтоб потом передать главной форме
+        public Login()
+        {
+            InitializeComponent();
+        }
 
-            /// <summary>
-            /// передача авторизированного пользователя
-            /// </summary>
-            /// <returns></returns>
-            internal User Fill_user()
-            {
-                return cur_user;
-            }
+        /// <summary>
+        /// передача авторизированного пользователя
+        /// </summary>
+        /// <returns></returns>
+        internal User Fill_user()
+        {
+            return cur_user;
+        }
 
-            //красивая линия
-            private void Login_Paint(object sender, PaintEventArgs e)
-            {
-                Graphics g = e.Graphics;
-                Brush b = new LinearGradientBrush(new Rectangle(00, 150, 500, 150), Color.DarkRed, Color.White, LinearGradientMode.Horizontal);
-                Pen p = new Pen(b, 4);
-                g.DrawLine(p, new Point(40, 140), new Point(500, 140));
-            }
+        //красивая линия
+        private void Login_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Brush b = new LinearGradientBrush(new Rectangle(00, 150, 500, 150), Color.DarkRed, Color.White, LinearGradientMode.Horizontal);
+            Pen p = new Pen(b, 4);
+            g.DrawLine(p, new Point(40, 140), new Point(500, 140));
+        }
 
             //кнопка войти
         private void button1_Click_1(object sender, EventArgs e)

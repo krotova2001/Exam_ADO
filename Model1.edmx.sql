@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 02/15/2023 18:40:13
+-- Date Created: 02/15/2023 21:41:14
 -- Generated from EDMX file: C:\Users\zvuk2\source\repos\krotova2001\Exam_ADO\Model1.edmx
 -- --------------------------------------------------
 
@@ -17,11 +17,56 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[FK_UsersBooks]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[BooksSet] DROP CONSTRAINT [FK_UsersBooks];
+GO
+IF OBJECT_ID(N'[dbo].[FK_GenreBooks]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[BooksSet] DROP CONSTRAINT [FK_GenreBooks];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AuthorsBooks_Authors]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AuthorsBooks] DROP CONSTRAINT [FK_AuthorsBooks_Authors];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AuthorsBooks_Books]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AuthorsBooks] DROP CONSTRAINT [FK_AuthorsBooks_Books];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AkciiBooks]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[BooksSet] DROP CONSTRAINT [FK_AkciiBooks];
+GO
+IF OBJECT_ID(N'[dbo].[FK_SalesBooks_Sales]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[SalesBooks] DROP CONSTRAINT [FK_SalesBooks_Sales];
+GO
+IF OBJECT_ID(N'[dbo].[FK_SalesBooks_Books]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[SalesBooks] DROP CONSTRAINT [FK_SalesBooks_Books];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[UsersSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[UsersSet];
+GO
+IF OBJECT_ID(N'[dbo].[BooksSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[BooksSet];
+GO
+IF OBJECT_ID(N'[dbo].[AuthorsSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AuthorsSet];
+GO
+IF OBJECT_ID(N'[dbo].[GenreSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[GenreSet];
+GO
+IF OBJECT_ID(N'[dbo].[SalesSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[SalesSet];
+GO
+IF OBJECT_ID(N'[dbo].[AkciiSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AkciiSet];
+GO
+IF OBJECT_ID(N'[dbo].[AuthorsBooks]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AuthorsBooks];
+GO
+IF OBJECT_ID(N'[dbo].[SalesBooks]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[SalesBooks];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -42,9 +87,9 @@ CREATE TABLE [dbo].[BooksSet] (
     [Title] nvarchar(max)  NOT NULL,
     [Cost] int  NOT NULL,
     [Year] int  NOT NULL,
-    [Users_Iduser] int  NOT NULL,
+    [Users_Iduser] int  NULL,
     [Genre_IdGenre] int  NOT NULL,
-    [Akcii_Idakcii] int  NOT NULL
+    [Akcii_Idakcii] int  NULL
 );
 GO
 
@@ -203,21 +248,6 @@ ON [dbo].[AuthorsBooks]
     ([Books_Idbook]);
 GO
 
--- Creating foreign key on [Akcii_Idakcii] in table 'BooksSet'
-ALTER TABLE [dbo].[BooksSet]
-ADD CONSTRAINT [FK_AkciiBooks]
-    FOREIGN KEY ([Akcii_Idakcii])
-    REFERENCES [dbo].[AkciiSet]
-        ([Idakcii])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_AkciiBooks'
-CREATE INDEX [IX_FK_AkciiBooks]
-ON [dbo].[BooksSet]
-    ([Akcii_Idakcii]);
-GO
-
 -- Creating foreign key on [Sales_Idsale] in table 'SalesBooks'
 ALTER TABLE [dbo].[SalesBooks]
 ADD CONSTRAINT [FK_SalesBooks_Sales]
@@ -240,6 +270,21 @@ GO
 CREATE INDEX [IX_FK_SalesBooks_Books]
 ON [dbo].[SalesBooks]
     ([Books_Idbook]);
+GO
+
+-- Creating foreign key on [Akcii_Idakcii] in table 'BooksSet'
+ALTER TABLE [dbo].[BooksSet]
+ADD CONSTRAINT [FK_AkciiBooks]
+    FOREIGN KEY ([Akcii_Idakcii])
+    REFERENCES [dbo].[AkciiSet]
+        ([Idakcii])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_AkciiBooks'
+CREATE INDEX [IX_FK_AkciiBooks]
+ON [dbo].[BooksSet]
+    ([Akcii_Idakcii]);
 GO
 
 -- --------------------------------------------------

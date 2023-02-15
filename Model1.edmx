@@ -30,10 +30,6 @@
       <End Role="Books" EntitySet="BooksSet" />
       <End Role="AuthorsBooks" EntitySet="AuthorsBooks" />
     </AssociationSet>
-    <AssociationSet Name="AkciiBooks" Association="Model1.Store.AkciiBooks">
-      <End Role="Akcii" EntitySet="AkciiSet" />
-      <End Role="Books" EntitySet="BooksSet" />
-    </AssociationSet>
     <AssociationSet Name="FK_SalesBooks_Sales" Association="Model1.Store.FK_SalesBooks_Sales">
       <End Role="Sales" EntitySet="SalesSet" />
       <End Role="SalesBooks" EntitySet="SalesBooks" />
@@ -41,6 +37,10 @@
     <AssociationSet Name="FK_SalesBooks_Books" Association="Model1.Store.FK_SalesBooks_Books">
       <End Role="Books" EntitySet="BooksSet" />
       <End Role="SalesBooks" EntitySet="SalesBooks" />
+    </AssociationSet>
+    <AssociationSet Name="AkciiBooks" Association="Model1.Store.AkciiBooks">
+      <End Role="Akcii" EntitySet="AkciiSet" />
+      <End Role="Books" EntitySet="BooksSet" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="UsersSet">
@@ -60,9 +60,9 @@
     <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Cost" Type="int" Nullable="false" />
     <Property Name="Year" Type="int" Nullable="false" />
-    <Property Name="Users_Iduser" Type="int" Nullable="false" />
+    <Property Name="Users_Iduser" Type="int" Nullable="true" />
     <Property Name="Genre_IdGenre" Type="int" Nullable="false" />
-    <Property Name="Akcii_Idakcii" Type="int" Nullable="false" />
+    <Property Name="Akcii_Idakcii" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="AuthorsSet">
     <Key>
@@ -112,7 +112,7 @@
     <Property Name="Books_Idbook" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="UsersBooks">
-    <End Role="Users" Type="Model1.Store.UsersSet" Multiplicity="1" />
+    <End Role="Users" Type="Model1.Store.UsersSet" Multiplicity="0..1" />
     <End Role="Books" Type="Model1.Store.BooksSet" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Users">
@@ -136,7 +136,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="AkciiBooks">
-    <End Role="Akcii" Type="Model1.Store.AkciiSet" Multiplicity="1" />
+    <End Role="Akcii" Type="Model1.Store.AkciiSet" Multiplicity="0..1" />
     <End Role="Books" Type="Model1.Store.BooksSet" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Akcii">
@@ -218,12 +218,12 @@
             <End Role="Authors" EntitySet="AuthorsSet" />
             <End Role="Books" EntitySet="BooksSet" />
           </AssociationSet>
-          <AssociationSet Name="AkciiBooks" Association="Model1.AkciiBooks">
-            <End Role="Akcii" EntitySet="AkciiSet" />
-            <End Role="Books" EntitySet="BooksSet" />
-          </AssociationSet>
           <AssociationSet Name="SalesBooks" Association="Model1.SalesBooks">
             <End Role="Sales" EntitySet="SalesSet" />
+            <End Role="Books" EntitySet="BooksSet" />
+          </AssociationSet>
+          <AssociationSet Name="AkciiBooks" Association="Model1.AkciiBooks">
+            <End Role="Akcii" EntitySet="AkciiSet" />
             <End Role="Books" EntitySet="BooksSet" />
           </AssociationSet>
         </EntityContainer>
@@ -248,8 +248,8 @@
           <NavigationProperty Name="Users" Relationship="Model1.UsersBooks" FromRole="Books" ToRole="Users" />
           <NavigationProperty Name="Genre" Relationship="Model1.GenreBooks" FromRole="Books" ToRole="Genre" />
           <NavigationProperty Name="Authors" Relationship="Model1.AuthorsBooks" FromRole="Books" ToRole="Authors" />
-          <NavigationProperty Name="Akcii" Relationship="Model1.AkciiBooks" FromRole="Books" ToRole="Akcii" />
           <NavigationProperty Name="Sales" Relationship="Model1.SalesBooks" FromRole="Books" ToRole="Sales" />
+          <NavigationProperty Name="Akcii" Relationship="Model1.AkciiBooks" FromRole="Books" ToRole="Akcii" />
         </EntityType>
         <EntityType Name="Authors">
           <Key>
@@ -287,7 +287,7 @@
           <NavigationProperty Name="Books" Relationship="Model1.AkciiBooks" FromRole="Akcii" ToRole="Books" />
         </EntityType>
         <Association Name="UsersBooks">
-          <End Type="Model1.Users" Role="Users" Multiplicity="1" />
+          <End Type="Model1.Users" Role="Users" Multiplicity="0..1" />
           <End Type="Model1.Books" Role="Books" Multiplicity="*" />
         </Association>
         <Association Name="GenreBooks">
@@ -298,12 +298,12 @@
           <End Type="Model1.Authors" Role="Authors" Multiplicity="*" />
           <End Type="Model1.Books" Role="Books" Multiplicity="*" />
         </Association>
-        <Association Name="AkciiBooks">
-          <End Type="Model1.Akcii" Role="Akcii" Multiplicity="1" />
-          <End Type="Model1.Books" Role="Books" Multiplicity="*" />
-        </Association>
         <Association Name="SalesBooks">
           <End Type="Model1.Sales" Role="Sales" Multiplicity="*" />
+          <End Type="Model1.Books" Role="Books" Multiplicity="*" />
+        </Association>
+        <Association Name="AkciiBooks">
+          <End Type="Model1.Akcii" Role="Akcii" Multiplicity="0..1" />
           <End Type="Model1.Books" Role="Books" Multiplicity="*" />
         </Association>
       </Schema>
@@ -374,6 +374,7 @@
       <EndProperty Name="Books">
         <ScalarProperty Name="Idbook" ColumnName="Idbook" />
       </EndProperty>
+      <Condition ColumnName="Users_Iduser" IsNull="false" />
     </AssociationSetMapping>
     <AssociationSetMapping Name="GenreBooks" TypeName="Model1.GenreBooks" StoreEntitySet="BooksSet">
       <EndProperty Name="Genre">
@@ -391,14 +392,6 @@
         <ScalarProperty Name="Idbook" ColumnName="Books_Idbook" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="AkciiBooks" TypeName="Model1.AkciiBooks" StoreEntitySet="BooksSet">
-      <EndProperty Name="Akcii">
-        <ScalarProperty Name="Idakcii" ColumnName="Akcii_Idakcii" />
-      </EndProperty>
-      <EndProperty Name="Books">
-        <ScalarProperty Name="Idbook" ColumnName="Idbook" />
-      </EndProperty>
-    </AssociationSetMapping>
     <AssociationSetMapping Name="SalesBooks" TypeName="Model1.SalesBooks" StoreEntitySet="SalesBooks">
       <EndProperty Name="Sales">
         <ScalarProperty Name="Idsale" ColumnName="Sales_Idsale" />
@@ -406,6 +399,15 @@
       <EndProperty Name="Books">
         <ScalarProperty Name="Idbook" ColumnName="Books_Idbook" />
       </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AkciiBooks" TypeName="Model1.AkciiBooks" StoreEntitySet="BooksSet">
+      <EndProperty Name="Akcii">
+        <ScalarProperty Name="Idakcii" ColumnName="Akcii_Idakcii" />
+      </EndProperty>
+      <EndProperty Name="Books">
+        <ScalarProperty Name="Idbook" ColumnName="Idbook" />
+      </EndProperty>
+      <Condition ColumnName="Akcii_Idakcii" IsNull="false" />
     </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
