@@ -12,8 +12,9 @@
     <EntitySet Name="GenreSet" EntityType="Model1.Store.GenreSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="SalesSet" EntityType="Model1.Store.SalesSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="AkciiSet" EntityType="Model1.Store.AkciiSet" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="AuthorsBooks" EntityType="Model1.Store.AuthorsBooks" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PublisherSet" EntityType="Model1.Store.PublisherSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="SalesBooks" EntityType="Model1.Store.SalesBooks" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="BooksBooks" EntityType="Model1.Store.BooksBooks" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="UsersBooks" Association="Model1.Store.UsersBooks">
       <End Role="Users" EntitySet="UsersSet" />
       <End Role="Books" EntitySet="BooksSet" />
@@ -22,13 +23,9 @@
       <End Role="Genre" EntitySet="GenreSet" />
       <End Role="Books" EntitySet="BooksSet" />
     </AssociationSet>
-    <AssociationSet Name="FK_AuthorsBooks_Authors" Association="Model1.Store.FK_AuthorsBooks_Authors">
+    <AssociationSet Name="AuthorsBooks" Association="Model1.Store.AuthorsBooks">
       <End Role="Authors" EntitySet="AuthorsSet" />
-      <End Role="AuthorsBooks" EntitySet="AuthorsBooks" />
-    </AssociationSet>
-    <AssociationSet Name="FK_AuthorsBooks_Books" Association="Model1.Store.FK_AuthorsBooks_Books">
       <End Role="Books" EntitySet="BooksSet" />
-      <End Role="AuthorsBooks" EntitySet="AuthorsBooks" />
     </AssociationSet>
     <AssociationSet Name="FK_SalesBooks_Sales" Association="Model1.Store.FK_SalesBooks_Sales">
       <End Role="Sales" EntitySet="SalesSet" />
@@ -40,6 +37,18 @@
     </AssociationSet>
     <AssociationSet Name="AkciiBooks" Association="Model1.Store.AkciiBooks">
       <End Role="Akcii" EntitySet="AkciiSet" />
+      <End Role="Books" EntitySet="BooksSet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BooksBooks_Books" Association="Model1.Store.FK_BooksBooks_Books">
+      <End Role="Books" EntitySet="BooksSet" />
+      <End Role="BooksBooks" EntitySet="BooksBooks" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BooksBooks_Books1" Association="Model1.Store.FK_BooksBooks_Books1">
+      <End Role="Books1" EntitySet="BooksSet" />
+      <End Role="BooksBooks" EntitySet="BooksBooks" />
+    </AssociationSet>
+    <AssociationSet Name="PublisherBooks" Association="Model1.Store.PublisherBooks">
+      <End Role="Publisher" EntitySet="PublisherSet" />
       <End Role="Books" EntitySet="BooksSet" />
     </AssociationSet>
   </EntityContainer>
@@ -60,9 +69,14 @@
     <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Cost" Type="int" Nullable="false" />
     <Property Name="Year" Type="int" Nullable="false" />
+    <Property Name="Count" Type="int" Nullable="false" />
+    <Property Name="Cost_self" Type="int" Nullable="true" />
+    <Property Name="Pages" Type="int" Nullable="true" />
     <Property Name="Users_Iduser" Type="int" Nullable="true" />
     <Property Name="Genre_IdGenre" Type="int" Nullable="false" />
+    <Property Name="Authors_IdAuthor" Type="int" Nullable="false" />
     <Property Name="Akcii_Idakcii" Type="int" Nullable="true" />
+    <Property Name="Publisher_Idpublisher" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="AuthorsSet">
     <Key>
@@ -95,13 +109,12 @@
     <Property Name="start" Type="datetime" Nullable="false" />
     <Property Name="stop" Type="datetime" Nullable="false" />
   </EntityType>
-  <EntityType Name="AuthorsBooks">
+  <EntityType Name="PublisherSet">
     <Key>
-      <PropertyRef Name="Authors_IdAuthor" />
-      <PropertyRef Name="Books_Idbook" />
+      <PropertyRef Name="Idpublisher" />
     </Key>
-    <Property Name="Authors_IdAuthor" Type="int" Nullable="false" />
-    <Property Name="Books_Idbook" Type="int" Nullable="false" />
+    <Property Name="Idpublisher" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="SalesBooks">
     <Key>
@@ -110,6 +123,14 @@
     </Key>
     <Property Name="Sales_Idsale" Type="int" Nullable="false" />
     <Property Name="Books_Idbook" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BooksBooks">
+    <Key>
+      <PropertyRef Name="is_parts_Idbook" />
+      <PropertyRef Name="parts_Idbook" />
+    </Key>
+    <Property Name="is_parts_Idbook" Type="int" Nullable="false" />
+    <Property Name="parts_Idbook" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="UsersBooks">
     <End Role="Users" Type="Model1.Store.UsersSet" Multiplicity="0..1" />
@@ -135,6 +156,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="AuthorsBooks">
+    <End Role="Authors" Type="Model1.Store.AuthorsSet" Multiplicity="1" />
+    <End Role="Books" Type="Model1.Store.BooksSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Authors">
+        <PropertyRef Name="IdAuthor" />
+      </Principal>
+      <Dependent Role="Books">
+        <PropertyRef Name="Authors_IdAuthor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="AkciiBooks">
     <End Role="Akcii" Type="Model1.Store.AkciiSet" Multiplicity="0..1" />
     <End Role="Books" Type="Model1.Store.BooksSet" Multiplicity="*" />
@@ -147,27 +180,15 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_AuthorsBooks_Authors">
-    <End Role="Authors" Type="Model1.Store.AuthorsSet" Multiplicity="1" />
-    <End Role="AuthorsBooks" Type="Model1.Store.AuthorsBooks" Multiplicity="*" />
+  <Association Name="PublisherBooks">
+    <End Role="Publisher" Type="Model1.Store.PublisherSet" Multiplicity="1" />
+    <End Role="Books" Type="Model1.Store.BooksSet" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="Authors">
-        <PropertyRef Name="IdAuthor" />
+      <Principal Role="Publisher">
+        <PropertyRef Name="Idpublisher" />
       </Principal>
-      <Dependent Role="AuthorsBooks">
-        <PropertyRef Name="Authors_IdAuthor" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_AuthorsBooks_Books">
-    <End Role="AuthorsBooks" Type="Model1.Store.AuthorsBooks" Multiplicity="*" />
-    <End Role="Books" Type="Model1.Store.BooksSet" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="Books">
-        <PropertyRef Name="Idbook" />
-      </Principal>
-      <Dependent Role="AuthorsBooks">
-        <PropertyRef Name="Books_Idbook" />
+      <Dependent Role="Books">
+        <PropertyRef Name="Publisher_Idpublisher" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -192,6 +213,30 @@
       </Principal>
       <Dependent Role="SalesBooks">
         <PropertyRef Name="Books_Idbook" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BooksBooks_Books">
+    <End Role="Books" Type="Model1.Store.BooksSet" Multiplicity="1" />
+    <End Role="BooksBooks" Type="Model1.Store.BooksBooks" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Books">
+        <PropertyRef Name="Idbook" />
+      </Principal>
+      <Dependent Role="BooksBooks">
+        <PropertyRef Name="is_parts_Idbook" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BooksBooks_Books1">
+    <End Role="BooksBooks" Type="Model1.Store.BooksBooks" Multiplicity="*" />
+    <End Role="Books1" Type="Model1.Store.BooksSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Books1">
+        <PropertyRef Name="Idbook" />
+      </Principal>
+      <Dependent Role="BooksBooks">
+        <PropertyRef Name="parts_Idbook" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -226,6 +271,15 @@
             <End Role="Akcii" EntitySet="AkciiSet" />
             <End Role="Books" EntitySet="BooksSet" />
           </AssociationSet>
+          <AssociationSet Name="BooksBooks" Association="Model1.BooksBooks">
+            <End Role="Books" EntitySet="BooksSet" />
+            <End Role="Books1" EntitySet="BooksSet" />
+          </AssociationSet>
+          <EntitySet Name="PublisherSet" EntityType="Model1.Publisher" />
+          <AssociationSet Name="PublisherBooks" Association="Model1.PublisherBooks">
+            <End Role="Publisher" EntitySet="PublisherSet" />
+            <End Role="Books" EntitySet="BooksSet" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Users">
           <Key>
@@ -250,6 +304,12 @@
           <NavigationProperty Name="Authors" Relationship="Model1.AuthorsBooks" FromRole="Books" ToRole="Authors" />
           <NavigationProperty Name="Sales" Relationship="Model1.SalesBooks" FromRole="Books" ToRole="Sales" />
           <NavigationProperty Name="Akcii" Relationship="Model1.AkciiBooks" FromRole="Books" ToRole="Akcii" />
+          <NavigationProperty Name="parts" Relationship="Model1.BooksBooks" FromRole="Books" ToRole="Books1" />
+          <NavigationProperty Name="is_parts" Relationship="Model1.BooksBooks" FromRole="Books1" ToRole="Books" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="Cost_self" Type="Int32" Nullable="true" />
+          <Property Name="Pages" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Publisher" Relationship="Model1.PublisherBooks" FromRole="Books" ToRole="Publisher" />
         </EntityType>
         <EntityType Name="Authors">
           <Key>
@@ -295,7 +355,7 @@
           <End Type="Model1.Books" Role="Books" Multiplicity="*" />
         </Association>
         <Association Name="AuthorsBooks">
-          <End Type="Model1.Authors" Role="Authors" Multiplicity="*" />
+          <End Type="Model1.Authors" Role="Authors" Multiplicity="1" />
           <End Type="Model1.Books" Role="Books" Multiplicity="*" />
         </Association>
         <Association Name="SalesBooks">
@@ -304,6 +364,22 @@
         </Association>
         <Association Name="AkciiBooks">
           <End Type="Model1.Akcii" Role="Akcii" Multiplicity="0..1" />
+          <End Type="Model1.Books" Role="Books" Multiplicity="*" />
+        </Association>
+        <Association Name="BooksBooks">
+          <End Type="Model1.Books" Role="Books" Multiplicity="*" />
+          <End Type="Model1.Books" Role="Books1" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Publisher">
+          <Key>
+            <PropertyRef Name="Idpublisher" />
+          </Key>
+          <Property Name="Idpublisher" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Books" Relationship="Model1.PublisherBooks" FromRole="Publisher" ToRole="Books" />
+          <Property Name="Name" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="PublisherBooks">
+          <End Type="Model1.Publisher" Role="Publisher" Multiplicity="1" />
           <End Type="Model1.Books" Role="Books" Multiplicity="*" />
         </Association>
       </Schema>
@@ -329,6 +405,9 @@
           <ScalarProperty Name="Title" ColumnName="Title" />
           <ScalarProperty Name="Cost" ColumnName="Cost" />
           <ScalarProperty Name="Year" ColumnName="Year" />
+          <ScalarProperty Name="Count" ColumnName="Count" />
+          <ScalarProperty Name="Cost_self" ColumnName="Cost_self" />
+          <ScalarProperty Name="Pages" ColumnName="Pages" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -367,6 +446,14 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="PublisherSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model1.Publisher)">
+        <MappingFragment StoreEntitySet="PublisherSet">
+          <ScalarProperty Name="Idpublisher" ColumnName="Idpublisher" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <AssociationSetMapping Name="UsersBooks" TypeName="Model1.UsersBooks" StoreEntitySet="BooksSet">
       <EndProperty Name="Users">
         <ScalarProperty Name="Iduser" ColumnName="Users_Iduser" />
@@ -384,12 +471,12 @@
         <ScalarProperty Name="Idbook" ColumnName="Idbook" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="AuthorsBooks" TypeName="Model1.AuthorsBooks" StoreEntitySet="AuthorsBooks">
+    <AssociationSetMapping Name="AuthorsBooks" TypeName="Model1.AuthorsBooks" StoreEntitySet="BooksSet">
       <EndProperty Name="Authors">
         <ScalarProperty Name="IdAuthor" ColumnName="Authors_IdAuthor" />
       </EndProperty>
       <EndProperty Name="Books">
-        <ScalarProperty Name="Idbook" ColumnName="Books_Idbook" />
+        <ScalarProperty Name="Idbook" ColumnName="Idbook" />
       </EndProperty>
     </AssociationSetMapping>
     <AssociationSetMapping Name="SalesBooks" TypeName="Model1.SalesBooks" StoreEntitySet="SalesBooks">
@@ -408,6 +495,22 @@
         <ScalarProperty Name="Idbook" ColumnName="Idbook" />
       </EndProperty>
       <Condition ColumnName="Akcii_Idakcii" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="BooksBooks" TypeName="Model1.BooksBooks" StoreEntitySet="BooksBooks">
+      <EndProperty Name="Books">
+        <ScalarProperty Name="Idbook" ColumnName="is_parts_Idbook" />
+      </EndProperty>
+      <EndProperty Name="Books1">
+        <ScalarProperty Name="Idbook" ColumnName="parts_Idbook" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="PublisherBooks" TypeName="Model1.PublisherBooks" StoreEntitySet="BooksSet">
+      <EndProperty Name="Publisher">
+        <ScalarProperty Name="Idpublisher" ColumnName="Publisher_Idpublisher" />
+      </EndProperty>
+      <EndProperty Name="Books">
+        <ScalarProperty Name="Idbook" ColumnName="Idbook" />
+      </EndProperty>
     </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>

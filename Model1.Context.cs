@@ -31,5 +31,6 @@ namespace Exam_ADO
         public virtual DbSet<Genre> GenreSet { get; set; }
         public virtual DbSet<Sales> SalesSet { get; set; }
         public virtual DbSet<Akcii> AkciiSet { get; set; }
+        public virtual DbSet<Publisher> PublisherSet { get; set; }
     }
 }

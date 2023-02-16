@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 02/15/2023 21:41:14
+-- Date Created: 02/16/2023 22:00:56
 -- Generated from EDMX file: C:\Users\zvuk2\source\repos\krotova2001\Exam_ADO\Model1.edmx
 -- --------------------------------------------------
 
@@ -29,14 +29,23 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_AuthorsBooks_Books]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[AuthorsBooks] DROP CONSTRAINT [FK_AuthorsBooks_Books];
 GO
-IF OBJECT_ID(N'[dbo].[FK_AkciiBooks]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[BooksSet] DROP CONSTRAINT [FK_AkciiBooks];
-GO
 IF OBJECT_ID(N'[dbo].[FK_SalesBooks_Sales]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[SalesBooks] DROP CONSTRAINT [FK_SalesBooks_Sales];
 GO
 IF OBJECT_ID(N'[dbo].[FK_SalesBooks_Books]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[SalesBooks] DROP CONSTRAINT [FK_SalesBooks_Books];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AkciiBooks]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[BooksSet] DROP CONSTRAINT [FK_AkciiBooks];
+GO
+IF OBJECT_ID(N'[dbo].[FK_BooksBooks_Books]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[BooksBooks] DROP CONSTRAINT [FK_BooksBooks_Books];
+GO
+IF OBJECT_ID(N'[dbo].[FK_BooksBooks_Books1]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[BooksBooks] DROP CONSTRAINT [FK_BooksBooks_Books1];
+GO
+IF OBJECT_ID(N'[dbo].[FK_PublisherBooks]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[BooksSet] DROP CONSTRAINT [FK_PublisherBooks];
 GO
 
 -- --------------------------------------------------
@@ -61,11 +70,17 @@ GO
 IF OBJECT_ID(N'[dbo].[AkciiSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[AkciiSet];
 GO
+IF OBJECT_ID(N'[dbo].[PublisherSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[PublisherSet];
+GO
 IF OBJECT_ID(N'[dbo].[AuthorsBooks]', 'U') IS NOT NULL
     DROP TABLE [dbo].[AuthorsBooks];
 GO
 IF OBJECT_ID(N'[dbo].[SalesBooks]', 'U') IS NOT NULL
     DROP TABLE [dbo].[SalesBooks];
+GO
+IF OBJECT_ID(N'[dbo].[BooksBooks]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[BooksBooks];
 GO
 
 -- --------------------------------------------------
@@ -87,9 +102,14 @@ CREATE TABLE [dbo].[BooksSet] (
     [Title] nvarchar(max)  NOT NULL,
     [Cost] int  NOT NULL,
     [Year] int  NOT NULL,
+    [Count] int  NOT NULL,
+    [Cost_self] int  NULL,
+    [Pages] int  NULL,
     [Users_Iduser] int  NULL,
     [Genre_IdGenre] int  NOT NULL,
-    [Akcii_Idakcii] int  NULL
+    [Authors_IdAuthor] int  NOT NULL,
+    [Akcii_Idakcii] int  NULL,
+    [Publisher_Idpublisher] int  NOT NULL
 );
 GO
 
@@ -124,10 +144,10 @@ CREATE TABLE [dbo].[AkciiSet] (
 );
 GO
 
--- Creating table 'AuthorsBooks'
-CREATE TABLE [dbo].[AuthorsBooks] (
-    [Authors_IdAuthor] int  NOT NULL,
-    [Books_Idbook] int  NOT NULL
+-- Creating table 'PublisherSet'
+CREATE TABLE [dbo].[PublisherSet] (
+    [Idpublisher] int IDENTITY(1,1) NOT NULL,
+    [Name] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -135,6 +155,13 @@ GO
 CREATE TABLE [dbo].[SalesBooks] (
     [Sales_Idsale] int  NOT NULL,
     [Books_Idbook] int  NOT NULL
+);
+GO
+
+-- Creating table 'BooksBooks'
+CREATE TABLE [dbo].[BooksBooks] (
+    [is_parts_Idbook] int  NOT NULL,
+    [parts_Idbook] int  NOT NULL
 );
 GO
 
@@ -178,16 +205,22 @@ ADD CONSTRAINT [PK_AkciiSet]
     PRIMARY KEY CLUSTERED ([Idakcii] ASC);
 GO
 
--- Creating primary key on [Authors_IdAuthor], [Books_Idbook] in table 'AuthorsBooks'
-ALTER TABLE [dbo].[AuthorsBooks]
-ADD CONSTRAINT [PK_AuthorsBooks]
-    PRIMARY KEY CLUSTERED ([Authors_IdAuthor], [Books_Idbook] ASC);
+-- Creating primary key on [Idpublisher] in table 'PublisherSet'
+ALTER TABLE [dbo].[PublisherSet]
+ADD CONSTRAINT [PK_PublisherSet]
+    PRIMARY KEY CLUSTERED ([Idpublisher] ASC);
 GO
 
 -- Creating primary key on [Sales_Idsale], [Books_Idbook] in table 'SalesBooks'
 ALTER TABLE [dbo].[SalesBooks]
 ADD CONSTRAINT [PK_SalesBooks]
     PRIMARY KEY CLUSTERED ([Sales_Idsale], [Books_Idbook] ASC);
+GO
+
+-- Creating primary key on [is_parts_Idbook], [parts_Idbook] in table 'BooksBooks'
+ALTER TABLE [dbo].[BooksBooks]
+ADD CONSTRAINT [PK_BooksBooks]
+    PRIMARY KEY CLUSTERED ([is_parts_Idbook], [parts_Idbook] ASC);
 GO
 
 -- --------------------------------------------------
@@ -224,28 +257,19 @@ ON [dbo].[BooksSet]
     ([Genre_IdGenre]);
 GO
 
--- Creating foreign key on [Authors_IdAuthor] in table 'AuthorsBooks'
-ALTER TABLE [dbo].[AuthorsBooks]
-ADD CONSTRAINT [FK_AuthorsBooks_Authors]
+-- Creating foreign key on [Authors_IdAuthor] in table 'BooksSet'
+ALTER TABLE [dbo].[BooksSet]
+ADD CONSTRAINT [FK_AuthorsBooks]
     FOREIGN KEY ([Authors_IdAuthor])
     REFERENCES [dbo].[AuthorsSet]
         ([IdAuthor])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
--- Creating foreign key on [Books_Idbook] in table 'AuthorsBooks'
-ALTER TABLE [dbo].[AuthorsBooks]
-ADD CONSTRAINT [FK_AuthorsBooks_Books]
-    FOREIGN KEY ([Books_Idbook])
-    REFERENCES [dbo].[BooksSet]
-        ([Idbook])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_AuthorsBooks_Books'
-CREATE INDEX [IX_FK_AuthorsBooks_Books]
-ON [dbo].[AuthorsBooks]
-    ([Books_Idbook]);
+-- Creating non-clustered index for FOREIGN KEY 'FK_AuthorsBooks'
+CREATE INDEX [IX_FK_AuthorsBooks]
+ON [dbo].[BooksSet]
+    ([Authors_IdAuthor]);
 GO
 
 -- Creating foreign key on [Sales_Idsale] in table 'SalesBooks'
@@ -285,6 +309,45 @@ GO
 CREATE INDEX [IX_FK_AkciiBooks]
 ON [dbo].[BooksSet]
     ([Akcii_Idakcii]);
+GO
+
+-- Creating foreign key on [is_parts_Idbook] in table 'BooksBooks'
+ALTER TABLE [dbo].[BooksBooks]
+ADD CONSTRAINT [FK_BooksBooks_Books]
+    FOREIGN KEY ([is_parts_Idbook])
+    REFERENCES [dbo].[BooksSet]
+        ([Idbook])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [parts_Idbook] in table 'BooksBooks'
+ALTER TABLE [dbo].[BooksBooks]
+ADD CONSTRAINT [FK_BooksBooks_Books1]
+    FOREIGN KEY ([parts_Idbook])
+    REFERENCES [dbo].[BooksSet]
+        ([Idbook])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_BooksBooks_Books1'
+CREATE INDEX [IX_FK_BooksBooks_Books1]
+ON [dbo].[BooksBooks]
+    ([parts_Idbook]);
+GO
+
+-- Creating foreign key on [Publisher_Idpublisher] in table 'BooksSet'
+ALTER TABLE [dbo].[BooksSet]
+ADD CONSTRAINT [FK_PublisherBooks]
+    FOREIGN KEY ([Publisher_Idpublisher])
+    REFERENCES [dbo].[PublisherSet]
+        ([Idpublisher])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_PublisherBooks'
+CREATE INDEX [IX_FK_PublisherBooks]
+ON [dbo].[BooksSet]
+    ([Publisher_Idpublisher]);
 GO
 
 -- --------------------------------------------------

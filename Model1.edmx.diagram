@@ -8,7 +8,7 @@
         <EntityTypeShape EntityType="Model1.Users" Width="1.5" PointX="1.75" PointY="0.75" />
         <EntityTypeShape EntityType="Model1.Books" Width="1.5" PointX="4.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="Model1.Authors" Width="1.5" PointX="9.375" PointY="0.5" />
-        <EntityTypeShape EntityType="Model1.Genre" Width="1.5" PointX="2" PointY="3.875" />
+        <EntityTypeShape EntityType="Model1.Genre" Width="1.5" PointX="1.5" PointY="3.375" />
         <EntityTypeShape EntityType="Model1.Sales" Width="1.5" PointX="7.5" PointY="4.875" />
         <EntityTypeShape EntityType="Model1.Akcii" Width="1.5" PointX="9.625" PointY="3" />
         <AssociationConnector Association="Model1.UsersBooks" />
@@ -16,6 +16,9 @@
         <AssociationConnector Association="Model1.AuthorsBooks" />
         <AssociationConnector Association="Model1.SalesBooks" />
         <AssociationConnector Association="Model1.AkciiBooks" />
+        <AssociationConnector Association="Model1.BooksBooks" />
+        <EntityTypeShape EntityType="Model1.Publisher" Width="1.5" PointX="2.5" PointY="5.375" />
+        <AssociationConnector Association="Model1.PublisherBooks" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
