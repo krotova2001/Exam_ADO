@@ -154,5 +154,14 @@ namespace Exam_ADO
             if(cur_book != null)
                 Save_book(cur_book);
         }
+
+        //кнопка удалить
+        private void button9_Click(object sender, EventArgs e)
+        {
+            if (cur_book != null)
+                db.BooksSet.Remove(cur_book);
+            db.SaveChanges();
+            ls_update();
+        }
     }
 }
