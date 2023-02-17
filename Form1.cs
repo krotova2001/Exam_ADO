@@ -15,7 +15,7 @@ namespace Exam_ADO
         User current_user; // текущий пользователь для авторизации
         Books cur_book;
         Users users; // пользователь для откладывания книг
-        Model1Container db;
+        internal Model1Container db;
         public Form1()
         {
             InitializeComponent();
@@ -51,30 +51,28 @@ namespace Exam_ADO
             publisher.Books.Add(book);
 
             //проверяем есть ли уже такой автор
-            Authors author = new Authors();
-            author.Name = textBox2.Text;
-            var au = db.AuthorsSet.ToList();
-            if (au.Contains(author))
+            var au = from a in db.AuthorsSet
+                        where a.Name == textBox2.Text
+                        select a;
+            
+            if (au.Count() > 0)//если есть - ставим его в авторы книги
             {
-                //если есть - ставим его в авторы книги
-                author.Books.Add(book);
-                book.Authors = author;
+                Authors authors = au.FirstOrDefault();
+                book.Authors = authors;
+                authors.Books.Add(book);
             }
             else
             {
                 //если такого автора нет - делаем нового
+                Authors author = new Authors();
+                author.Name = textBox2.Text;
                 db.AuthorsSet.Add(author);
-                book.Authors = author;
                 author.Books.Add(book);
+                book.Authors = author;
             }
+            
         }
             
-            //приходится связывать пользователя и книгу здесь.
-            //users = db.UsersSet.Where(u => u.Iduser == current_user.Id).First();
-            //book.Users = users;
-            //users.Books.Add(book);
-        
-
         private void Form1_Load(object sender, EventArgs e)
         {
             //загружаем авторизацию
@@ -90,13 +88,15 @@ namespace Exam_ADO
         //кнопка Новая книга
         private void button5_Click(object sender, EventArgs e)
         {
+            
             if (textBox1.Text.Length < 1 || textBox2.Text.Length < 1)
                 MessageBox.Show("Все поля должны быть заполнены");
             else
             {
                 {
+                    //создаем новую книгу
                     Books book = new Books();
-                    Save_book(book);
+                    Save_book(book); // зполняем все поля
                     
                     db.BooksSet.Add(book);
                     db.SaveChanges();
@@ -163,5 +163,41 @@ namespace Exam_ADO
             db.SaveChanges();
             ls_update();
         }
+
+        //кнопка связать части
+        private void button11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        //кнопка пользователи
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Form2 form = new Form2(db, 0);
+            form.Show();
+        }
+
+        //кнопка Авторы
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Form2 form = new Form2(db, 1);
+            form.Show();
+        }
+
+        //кнопка ИЗдательства
+        private void button8_Click(object sender, EventArgs e)
+        {
+            Form2 form = new Form2(db, 2);
+            form.Show();
+        }
+
+        //кнопка Жанры
+        private void button7_Click(object sender, EventArgs e)
+        {
+            Form2 form = new Form2(db, 3);
+            form.Show();
+        }
+
+
     }
 }
