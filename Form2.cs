@@ -17,7 +17,6 @@ namespace Exam_ADO
         {
             InitializeComponent();
         }
-        
         /// <summary>
         /// В контруктторе передаем то что нужно редактировать
         /// </summary>
@@ -44,18 +43,6 @@ namespace Exam_ADO
                     break;
             }
         }
-
-
-        private void Form2_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void bindingSource1_CurrentChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             db.SaveChanges();

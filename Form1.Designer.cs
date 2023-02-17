@@ -81,7 +81,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(547, 28);
+            this.button2.Location = new System.Drawing.Point(538, 28);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 23);
             this.button2.TabIndex = 2;
@@ -340,12 +340,13 @@
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(426, 28);
+            this.button10.Location = new System.Drawing.Point(416, 28);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(115, 23);
             this.button10.TabIndex = 9;
             this.button10.Text = "Приход/списание";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // Form1
             // 

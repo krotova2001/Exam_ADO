@@ -198,6 +198,11 @@ namespace Exam_ADO
             form.Show();
         }
 
-
+        //кнопка приход/списание
+        private void button10_Click(object sender, EventArgs e)
+        {
+            From_book_sell F = new From_book_sell(db);
+            F.Show();
+        }
     }
 }
