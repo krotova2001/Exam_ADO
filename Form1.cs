@@ -262,7 +262,8 @@ namespace Exam_ADO
         //кнопка Продажа
         private void button1_Click(object sender, EventArgs e)
         {
-            
+            Form_Sell form_Sell = new Form_Sell(db);
+            form_Sell.Show();
         }
         
         //выбор акции
