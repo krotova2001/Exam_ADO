@@ -52,8 +52,11 @@ namespace Exam_ADO
 
             //выбор акций
             Akcii ak = db.AkciiSet.Where(p => p.Description == comboBox4.Text).FirstOrDefault();
-            book.Akcii = ak;
-            ak.Books.Add(book);
+            if (ak != null)
+            {
+                book.Akcii = ak;
+                ak.Books.Add(book);
+            }
 
             //проверяем есть ли уже такой автор
             var au = from a in db.AuthorsSet

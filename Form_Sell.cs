@@ -54,6 +54,7 @@ namespace Exam_ADO
                 foreach (var bookd in books)
                     discount += (bookd.Cost - (bookd.Cost / 100 * bookd.Akcii.Discount));
                 double total = price - discount;
+                label14.Text = discount.ToString();
                 label15.Text = total.ToString();
             }
         }
