@@ -13,8 +13,8 @@ namespace Exam_ADO
     public partial class Form1 : Form
     {
         User current_user; // текущий пользователь для авторизации
-        Books cur_book;
-        Users users; // пользователь для откладывания книг
+        Books cur_book; // текущая выбранная книга
+
         internal Model1Container db;
         public Form1()
         {
@@ -49,6 +49,11 @@ namespace Exam_ADO
             Publisher publisher = db.PublisherSet.Where(p => p.Name == comboBox2.Text).FirstOrDefault();
             book.Publisher = publisher;
             publisher.Books.Add(book);
+
+            //выбор акций
+            Akcii ak = db.AkciiSet.Where(p => p.Description == comboBox4.Text).FirstOrDefault();
+            book.Akcii = ak;
+            ak.Books.Add(book);
 
             //проверяем есть ли уже такой автор
             var au = from a in db.AuthorsSet
@@ -147,6 +152,10 @@ namespace Exam_ADO
             textBox6.Text = b.Pages.ToString();
             comboBox1.Text = b.Genre.Name;
             comboBox2.Text = b.Publisher.Name;
+            if (b.Akcii != null)
+                comboBox4.Text = b.Akcii.Description;
+            else
+                comboBox4.Text = string.Empty;
             var part = b.is_parts.ToList();
             foreach (Books bo in part)
                 label11.Text += bo.Title + " ";
@@ -243,6 +252,28 @@ namespace Exam_ADO
                 }
             }
         }
+         //кнопка акции
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form_akcii A = new Form_akcii(db);
+            A.Show();   
+        }
 
+        //кнопка Продажа
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+        }
+        
+        //выбор акции
+        private void comboBox4_Click(object sender, EventArgs e)
+        {
+            comboBox4.Items.Clear();
+            var akc = db.AkciiSet.ToList();
+            foreach (var i in akc)
+            {
+                comboBox4.Items.Add(i.Description);
+            }
+        }
     }
 }

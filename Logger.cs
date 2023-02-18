@@ -22,7 +22,7 @@ namespace Exam_ADO
         /// <returns>Новый объект User</returns>
         internal User Login(string username, string pass)
         {
-            string connectionString = "Server=BATYA\\SQLEXPRESS; Database=Books; Trusted_Connection=True;";
+            string connectionString = "Server=KROTOVVIVOBOOK\\SQLTESTING; Database=Books; Trusted_Connection=True;";
             // Создание подключения
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
