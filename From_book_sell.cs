@@ -13,6 +13,7 @@ namespace Exam_ADO
     public partial class From_book_sell : Form
     {
         internal Model1Container db;
+        internal Books cur_book;
         public From_book_sell()
         {
             InitializeComponent();
@@ -38,7 +39,6 @@ namespace Exam_ADO
             dataGridView1.Columns[13].Visible = false;
             dataGridView1.Columns[14].Visible = false;
             dataGridView1.Columns[10].Visible = false;
-
         }
 
         private void button1_Click(object sender, EventArgs e)

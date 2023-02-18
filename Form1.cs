@@ -138,6 +138,7 @@ namespace Exam_ADO
         //функция заполнения полей выбранной книги
         public void fill_fields(Books b)
         {
+            label11.Text = "";
             textBox1.Text = b.Title;
             textBox2.Text = b.Authors.Name;
             textBox3.Text = b.Year.ToString();
@@ -146,6 +147,9 @@ namespace Exam_ADO
             textBox6.Text = b.Pages.ToString();
             comboBox1.Text = b.Genre.Name;
             comboBox2.Text = b.Publisher.Name;
+            var part = b.is_parts.ToList();
+            foreach (Books bo in part)
+                label11.Text += bo.Title + " ";
         }
 
         //кнопка Сохранить
@@ -167,7 +171,28 @@ namespace Exam_ADO
         //кнопка связать части
         private void button11_Click(object sender, EventArgs e)
         {
+            if (cur_book != null)
+            {
+                var books = from a in db.BooksSet
+                            where a.Title == comboBox3.Text
+                            select a;
 
+                if (books.Count() > 0)//
+                {
+                    Books books_part = books.FirstOrDefault();
+                    cur_book.parts.Add(books_part);
+                    books_part.is_parts.Add(cur_book);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    MessageBox.Show("Не получается привязать книгу");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберете книгу");
+            }
         }
 
         //кнопка пользователи
@@ -204,5 +229,20 @@ namespace Exam_ADO
             From_book_sell F = new From_book_sell(db);
             F.Show();
         }
+
+        //выбор связанный частей книги
+        private void comboBox3_Click(object sender, EventArgs e)
+        {
+            if (cur_book != null)
+            {
+                comboBox3.Items.Clear();
+                var all_b = db.BooksSet.ToList();
+                foreach (var i in all_b)
+                {
+                    comboBox3.Items.Add(i.Title);
+                }
+            }
+        }
+
     }
 }
