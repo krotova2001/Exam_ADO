@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Exam_ADO
-{
+{ 
     public partial class Form1 : Form
     {
         User current_user; // текущий пользователь для авторизации
